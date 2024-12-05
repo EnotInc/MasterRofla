@@ -5,6 +5,7 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 Dictionary<string, string> phoneBook = new Dictionary<string, string>();
+
 Dictionary<DateTime, int> DateToJoke = new Dictionary<DateTime, int>();
 
 string[] ListOfJokes = 
@@ -43,6 +44,7 @@ async Task OnError(Exception exception, HandleErrorSource source)
     Console.WriteLine(exception); // just dump the exception to the console
 }
 
+
 async Task OnMessage(Message msg, UpdateType type)
 {
     var replymarkup = new ReplyKeyboardMarkup(true);
@@ -54,14 +56,13 @@ async Task OnMessage(Message msg, UpdateType type)
         if (!phoneExist1)
         {
             await bot.SendTextMessageAsync(msg.Chat, "Введите ваше имя");
+            waitingForName = true;
         }
         else
         {
             await bot.SendTextMessageAsync(msg.Chat, "Вы уже есть в системе");
         }
-        waitingForName = true;
     }
-
     else if (waitingForName)
     {
         name = msg.Text;
@@ -71,7 +72,7 @@ async Task OnMessage(Message msg, UpdateType type)
         
         var replyMarkup = new ReplyKeyboardMarkup(true)
         .AddButtons("Шутка дня", "Случайная шутка")
-        .AddNewRow("Видео - прикол", "Это шутка?");
+        .AddNewRow("Видео - прикол", "Это шутка?"); 
 
         var send = await bot.SendTextMessageAsync(msg.Chat, $"Здравствуйте, {name}", replyMarkup: replyMarkup);
     }
@@ -113,13 +114,13 @@ async Task OnMessage(Message msg, UpdateType type)
     {
         var send = await bot.SendTextMessageAsync(msg.Chat, Convert.ToString(msg.Chat.Id));
     }
-
     if (msg.Text == "Clear")
     {
         phoneBook.Clear();
         await bot.SendTextMessageAsync(msg.Chat, "phoneBook cleared");
     }
 }
+
 
 async Task OnUpdate(Update update)
     {
